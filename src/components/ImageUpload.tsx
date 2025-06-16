@@ -75,23 +75,46 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const handleImageUpload = async (file: File) => {
     if (!file) return;
 
-    console.log('📤 بدء رفع الصورة:', file.name, 'حجم:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+    console.log('📤 بدء رفع الصورة:', file.name, 'نوع:', file.type, 'حجم:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+
+    // التحقق من نوع الملف
+    if (!file.type.startsWith('image/')) {
+      console.error('❌ نوع الملف غير مدعوم:', file.type);
+      alert('يرجى اختيار ملف صورة صالح (JPG, PNG, GIF, WebP)');
+      return;
+    }
+
+    // التحقق من حجم الملف
+    if (file.size > 5 * 1024 * 1024) {
+      console.error('❌ حجم الملف كبير جداً:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+      alert('حجم الملف كبير جداً. يرجى اختيار صورة أصغر من 5MB');
+      return;
+    }
 
     setUploading(true);
     setImageError(false); // إعادة تعيين حالة الخطأ
+
     try {
+      console.log('🚀 استدعاء خدمة رفع الصور...');
       const imageUrl = await storageService.uploadImage(file, type, itemId);
+
       if (imageUrl) {
         console.log('✅ تم رفع الصورة بنجاح:', imageUrl);
+        console.log('🔄 تحديث الصورة في المكون...');
         onImageChange(imageUrl);
         setImageError(false); // التأكد من إزالة حالة الخطأ
       } else {
         console.error('❌ فشل في رفع الصورة - لم يتم إرجاع URL');
         setImageError(true);
+        alert('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
       }
     } catch (error) {
       console.error('❌ خطأ في رفع الصورة:', error);
       setImageError(true);
+
+      // رسالة خطأ مفصلة
+      const errorMessage = error instanceof Error ? error.message : 'حدث خطأ غير متوقع';
+      alert(`فشل في رفع الصورة: ${errorMessage}`);
     } finally {
       setUploading(false);
     }
@@ -109,12 +132,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragOver(false);
-    
+
     const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      handleImageUpload(file);
+    if (file) {
+      console.log('📁 ملف مسحوب:', file.name, file.type);
+      if (file.type.startsWith('image/')) {
+        handleImageUpload(file);
+      } else {
+        console.error('❌ نوع الملف المسحوب غير مدعوم:', file.type);
+        alert('يرجى رفع ملف صورة صالح (JPG, PNG, GIF, WebP)');
+      }
     } else {
-      alert('يرجى رفع ملف صورة صالح');
+      console.error('❌ لم يتم العثور على ملف مسحوب');
+      alert('لم يتم العثور على ملف. يرجى المحاولة مرة أخرى.');
     }
   };
 

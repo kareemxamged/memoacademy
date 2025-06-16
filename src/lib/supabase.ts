@@ -524,7 +524,7 @@ export const techniquesService = {
 
 // دوال رفع الصور
 export const storageService = {
-  // التحقق من وجود bucket وإنشاؤه إذا لم يكن موجوداً
+  // التحقق من وجود bucket
   async ensureBucketExists(): Promise<boolean> {
     try {
       // التحقق من وجود bucket
@@ -538,21 +538,12 @@ export const storageService = {
       const bucketExists = buckets?.some(bucket => bucket.name === 'instructor-images');
 
       if (!bucketExists) {
-        console.log('🔧 إنشاء bucket جديد...');
-        const { error: createError } = await supabase.storage.createBucket('instructor-images', {
-          public: true,
-          fileSizeLimit: 5242880, // 5MB
-          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-        });
-
-        if (createError) {
-          console.error('خطأ في إنشاء bucket:', createError);
-          return false;
-        }
-
-        console.log('✅ تم إنشاء bucket بنجاح');
+        console.error('❌ bucket غير موجود: instructor-images');
+        console.log('📦 Buckets المتاحة:', buckets?.map(b => b.name));
+        return false;
       }
 
+      console.log('✅ bucket موجود: instructor-images');
       return true;
     } catch (error) {
       console.error('خطأ في التحقق من bucket:', error);
@@ -562,12 +553,9 @@ export const storageService = {
   // دالة عامة لرفع الصور
   async uploadImage(file: File, type: 'instructor' | 'gallery' | 'course' | 'technique' | 'logo', itemId?: number): Promise<string | null> {
     try {
-      // التحقق من وجود bucket أولاً
-      const bucketReady = await this.ensureBucketExists();
-      if (!bucketReady) {
-        alert('خطأ في إعداد التخزين. يرجى المحاولة مرة أخرى.');
-        return null;
-      }
+      console.log('🔄 بدء عملية رفع الصورة...');
+      console.log('📁 نوع الملف:', file.type);
+      console.log('📏 حجم الملف:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
 
       // التحقق من نوع الملف
       if (!file.type.startsWith('image/')) {
@@ -589,12 +577,13 @@ export const storageService = {
       const randomId = Math.random().toString(36).substring(2);
       const fileName = `${type}-${itemId || timestamp}-${randomId}.${fileExt}`;
 
-      console.log('🔄 بدء رفع الصورة:', fileName);
+      console.log('📝 اسم الملف:', fileName);
 
       // تحديد bucket بناءً على نوع الصورة
       const bucketName = 'instructor-images'; // نستخدم bucket واحد لجميع الصور
 
-      // رفع الملف مباشرة
+      // رفع الملف مباشرة بدون التحقق من bucket (لأنه موجود بالفعل)
+      console.log('⬆️ رفع الملف إلى bucket:', bucketName);
       const { data, error } = await supabase.storage
         .from(bucketName)
         .upload(fileName, file, {
@@ -604,8 +593,18 @@ export const storageService = {
         });
 
       if (error) {
-        console.error('خطأ في رفع الصورة:', error);
-        alert(`فشل في رفع الصورة: ${error.message}`);
+        console.error('❌ خطأ في رفع الصورة:', error);
+
+        // رسائل خطأ أكثر تفصيلاً
+        if (error.message.includes('row-level security')) {
+          alert('خطأ في الصلاحيات. يرجى التواصل مع المطور لإعداد صلاحيات التخزين.');
+        } else if (error.message.includes('size')) {
+          alert('حجم الملف كبير جداً. يرجى اختيار صورة أصغر.');
+        } else if (error.message.includes('type')) {
+          alert('نوع الملف غير مدعوم. يرجى اختيار صورة صالحة.');
+        } else {
+          alert(`فشل في رفع الصورة: ${error.message}`);
+        }
         return null;
       }
 
@@ -618,9 +617,16 @@ export const storageService = {
 
       console.log('🔗 URL الصورة:', urlData.publicUrl);
 
+      // التحقق من صحة URL
+      if (!urlData.publicUrl) {
+        console.error('❌ فشل في الحصول على URL العام للصورة');
+        alert('فشل في الحصول على رابط الصورة');
+        return null;
+      }
+
       return urlData.publicUrl;
     } catch (error) {
-      console.error('خطأ في رفع الصورة:', error);
+      console.error('❌ خطأ غير متوقع في رفع الصورة:', error);
       alert('حدث خطأ غير متوقع في رفع الصورة');
       return null;
     }

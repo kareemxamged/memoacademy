@@ -250,10 +250,34 @@ const InstructorsSettings: React.FC<InstructorsSettingsProps> = ({ onDataChange 
                     src={item.image_url}
                     alt={item.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error('فشل في تحميل صورة المدرب:', item.image_url);
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `
+                          <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                            <div class="text-center">
+                              <svg class="w-16 h-16 text-gray-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                              </svg>
+                              <span class="text-gray-400 text-sm">فشل في تحميل الصورة</span>
+                            </div>
+                          </div>
+                        `;
+                      }
+                    }}
+                    onLoad={() => {
+                      console.log('✅ تم تحميل صورة المدرب بنجاح:', item.image_url);
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                    <User className="w-16 h-16 text-gray-400" />
+                    <div className="text-center">
+                      <User className="w-16 h-16 text-gray-400 mx-auto mb-2" />
+                      <span className="text-gray-400 text-sm">لا توجد صورة</span>
+                    </div>
                   </div>
                 )}
                 

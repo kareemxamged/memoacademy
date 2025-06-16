@@ -101,6 +101,7 @@ interface SiteData {
     titleEn: string;
     image: string;
     profileUrl: string;
+    whatsappNumber?: string;
     experience: string;
     experienceEn: string;
     specialties: string[];

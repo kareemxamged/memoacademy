@@ -59,6 +59,7 @@ export interface Instructor {
   title_en?: string;
   image_url?: string;
   profile_url?: string;
+  whatsapp_number?: string;
   experience?: string;
   experience_en?: string;
   specialties?: string[];

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { LogoUpload } from '../ImageUpload';
+import ImageUploadTest from './ImageUploadTest';
 
 // مكون الإعدادات العامة
 export const GeneralSettings: React.FC<{ data: any; onUpdate: (field: string, value: any) => void }> = ({ data, onUpdate }) => (
@@ -556,5 +557,13 @@ export const PagesSettings: React.FC<{ data: any; onUpdate: (field: string, valu
         </label>
       </div>
     </div>
+  </div>
+);
+
+// مكون اختبار رفع الصور
+export const ImageUploadTestSettings: React.FC = () => (
+  <div className="space-y-6">
+    <h3 className="text-xl font-bold text-gray-800 font-arabic">اختبار نظام رفع الصور</h3>
+    <ImageUploadTest />
   </div>
 );

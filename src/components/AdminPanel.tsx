@@ -141,7 +141,7 @@ import GallerySettings from './admin/GallerySettings';
 import InstructorsManagement from './admin/InstructorsSettings';
 import TechniquesSettings from './admin/TechniquesSettings';
 import SocialMediaSettings from './admin/SocialMediaSettings';
-import { GeneralSettings, LocationSettings, PagesSettings } from './admin/AdminSettings';
+import { GeneralSettings, LocationSettings, PagesSettings, ImageUploadTestSettings } from './admin/AdminSettings';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -271,6 +271,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, siteData, onDa
     { id: 'social', name: 'التواصل', icon: Share2 },
     { id: 'location', name: 'الموقع', icon: MapPin },
     { id: 'pages', name: 'الصفحات', icon: Eye },
+    { id: 'test', name: 'اختبار الصور', icon: Settings },
   ];
 
   if (!isOpen) return null;
@@ -513,6 +514,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, siteData, onDa
               )}
               {activeTab === 'pages' && (
                 <PagesSettings data={localData.pages} onUpdate={(field, value) => updateData(`pages.${field}`, value)} />
+              )}
+              {activeTab === 'test' && (
+                <ImageUploadTestSettings />
               )}
             </div>
           </div>

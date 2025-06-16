@@ -75,19 +75,23 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const handleImageUpload = async (file: File) => {
     if (!file) return;
 
+    console.log('📤 بدء رفع الصورة:', file.name, 'حجم:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+
     setUploading(true);
     setImageError(false); // إعادة تعيين حالة الخطأ
     try {
       const imageUrl = await storageService.uploadImage(file, type, itemId);
       if (imageUrl) {
+        console.log('✅ تم رفع الصورة بنجاح:', imageUrl);
         onImageChange(imageUrl);
         setImageError(false); // التأكد من إزالة حالة الخطأ
       } else {
-        alert('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
+        console.error('❌ فشل في رفع الصورة - لم يتم إرجاع URL');
+        setImageError(true);
       }
     } catch (error) {
-      console.error('خطأ في رفع الصورة:', error);
-      alert('حدث خطأ في رفع الصورة');
+      console.error('❌ خطأ في رفع الصورة:', error);
+      setImageError(true);
     } finally {
       setUploading(false);
     }
@@ -173,18 +177,22 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 alt="الصورة المرفوعة"
                 className="w-full h-full object-cover"
                 onLoad={() => {
+                  console.log('✅ تم تحميل الصورة بنجاح:', currentImage);
                   setImageLoading(false);
                   setImageError(false);
                 }}
                 onLoadStart={() => {
+                  console.log('🔄 بدء تحميل الصورة:', currentImage);
                   setImageLoading(true);
                   setImageError(false);
                 }}
-                onError={() => {
-                  console.error('فشل في تحميل الصورة في مكون الرفع:', currentImage);
+                onError={(e) => {
+                  console.error('❌ فشل في تحميل الصورة:', currentImage);
+                  console.error('تفاصيل الخطأ:', e);
                   setImageLoading(false);
                   setImageError(true);
                 }}
+                crossOrigin="anonymous"
               />
 
               {/* مؤشر تحميل الصورة */}
@@ -277,7 +285,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {/* معلومات إضافية */}
       <div className="text-xs text-gray-500 font-arabic">
         <p>الصيغ المدعومة: JPG, PNG, GIF, WebP</p>
-        <p>الحد الأقصى للحجم: 10MB</p>
+        <p>الحد الأقصى للحجم: 5MB</p>
       </div>
     </div>
   );

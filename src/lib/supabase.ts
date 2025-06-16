@@ -524,18 +524,62 @@ export const techniquesService = {
 
 // دوال رفع الصور
 export const storageService = {
+  // التحقق من وجود bucket وإنشاؤه إذا لم يكن موجوداً
+  async ensureBucketExists(): Promise<boolean> {
+    try {
+      // التحقق من وجود bucket
+      const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+
+      if (listError) {
+        console.error('خطأ في جلب قائمة buckets:', listError);
+        return false;
+      }
+
+      const bucketExists = buckets?.some(bucket => bucket.name === 'instructor-images');
+
+      if (!bucketExists) {
+        console.log('🔧 إنشاء bucket جديد...');
+        const { error: createError } = await supabase.storage.createBucket('instructor-images', {
+          public: true,
+          fileSizeLimit: 5242880, // 5MB
+          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+        });
+
+        if (createError) {
+          console.error('خطأ في إنشاء bucket:', createError);
+          return false;
+        }
+
+        console.log('✅ تم إنشاء bucket بنجاح');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('خطأ في التحقق من bucket:', error);
+      return false;
+    }
+  },
   // دالة عامة لرفع الصور
   async uploadImage(file: File, type: 'instructor' | 'gallery' | 'course' | 'technique' | 'logo', itemId?: number): Promise<string | null> {
     try {
-      // التحقق من نوع الملف
-      if (!file.type.startsWith('image/')) {
-        console.error('نوع الملف غير مدعوم - يجب أن يكون صورة');
+      // التحقق من وجود bucket أولاً
+      const bucketReady = await this.ensureBucketExists();
+      if (!bucketReady) {
+        alert('خطأ في إعداد التخزين. يرجى المحاولة مرة أخرى.');
         return null;
       }
 
-      // التحقق من حجم الملف (أقل من 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        console.error('حجم الملف كبير جداً - يجب أن يكون أقل من 10MB');
+      // التحقق من نوع الملف
+      if (!file.type.startsWith('image/')) {
+        console.error('نوع الملف غير مدعوم - يجب أن يكون صورة');
+        alert('نوع الملف غير مدعوم. يرجى اختيار صورة (JPG, PNG, GIF, WebP)');
+        return null;
+      }
+
+      // التحقق من حجم الملف (أقل من 5MB لتتوافق مع إعدادات bucket)
+      if (file.size > 5 * 1024 * 1024) {
+        console.error('حجم الملف كبير جداً - يجب أن يكون أقل من 5MB');
+        alert('حجم الملف كبير جداً. يرجى اختيار صورة أصغر من 5MB');
         return null;
       }
 
@@ -544,6 +588,8 @@ export const storageService = {
       const timestamp = Date.now();
       const randomId = Math.random().toString(36).substring(2);
       const fileName = `${type}-${itemId || timestamp}-${randomId}.${fileExt}`;
+
+      console.log('🔄 بدء رفع الصورة:', fileName);
 
       // تحديد bucket بناءً على نوع الصورة
       const bucketName = 'instructor-images'; // نستخدم bucket واحد لجميع الصور
@@ -559,17 +605,23 @@ export const storageService = {
 
       if (error) {
         console.error('خطأ في رفع الصورة:', error);
+        alert(`فشل في رفع الصورة: ${error.message}`);
         return null;
       }
+
+      console.log('✅ تم رفع الصورة بنجاح:', data.path);
 
       // الحصول على URL العام للصورة
       const { data: urlData } = supabase.storage
         .from(bucketName)
         .getPublicUrl(data.path);
 
+      console.log('🔗 URL الصورة:', urlData.publicUrl);
+
       return urlData.publicUrl;
     } catch (error) {
       console.error('خطأ في رفع الصورة:', error);
+      alert('حدث خطأ غير متوقع في رفع الصورة');
       return null;
     }
   },
@@ -625,6 +677,26 @@ export const storageService = {
   // حذف صورة مدرب (للتوافق مع الكود القديم)
   async deleteInstructorImage(imageUrl: string): Promise<boolean> {
     return this.deleteImage(imageUrl);
+  },
+
+  // اختبار الاتصال بـ Supabase Storage
+  async testConnection(): Promise<boolean> {
+    try {
+      console.log('🔍 اختبار الاتصال بـ Supabase Storage...');
+      const { data, error } = await supabase.storage.listBuckets();
+
+      if (error) {
+        console.error('❌ فشل في الاتصال بـ Supabase Storage:', error);
+        return false;
+      }
+
+      console.log('✅ تم الاتصال بـ Supabase Storage بنجاح');
+      console.log('📦 Buckets المتاحة:', data?.map(b => b.name));
+      return true;
+    } catch (error) {
+      console.error('❌ خطأ في اختبار الاتصال:', error);
+      return false;
+    }
   }
 };
 

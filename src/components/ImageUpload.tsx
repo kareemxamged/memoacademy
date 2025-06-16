@@ -101,8 +101,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       if (imageUrl) {
         console.log('✅ تم رفع الصورة بنجاح:', imageUrl);
         console.log('🔄 تحديث الصورة في المكون...');
-        onImageChange(imageUrl);
         setImageError(false); // التأكد من إزالة حالة الخطأ
+        setImageLoading(false); // إعادة تعيين حالة التحميل
+        onImageChange(imageUrl);
       } else {
         console.error('❌ فشل في رفع الصورة - لم يتم إرجاع URL');
         setImageError(true);
@@ -165,10 +166,31 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   // حذف الصورة الحالية
   const removeImage = () => {
+    console.log('🗑️ حذف الصورة الحالية');
     setImageError(false); // إعادة تعيين حالة الخطأ
     setImageLoading(false); // إعادة تعيين حالة التحميل
     onImageChange('');
   };
+
+  // إعادة تعيين حالة التحميل عند تغيير الصورة
+  React.useEffect(() => {
+    if (currentImage) {
+      console.log('🔄 تم تحديث currentImage:', currentImage);
+      setImageLoading(false); // إعادة تعيين حالة التحميل
+      setImageError(false); // إعادة تعيين حالة الخطأ
+    }
+  }, [currentImage]);
+
+  // تسجيل حالة المكون للتشخيص
+  React.useEffect(() => {
+    console.log('🔍 حالة مكون رفع الصور:', {
+      currentImage: currentImage ? 'موجودة' : 'غير موجودة',
+      uploading,
+      imageLoading,
+      imageError,
+      currentImageUrl: currentImage
+    });
+  }, [currentImage, uploading, imageLoading, imageError]);
 
   return (
     <div className={`space-y-3 ${className}`}>
@@ -200,29 +222,27 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           whileTap={{ scale: 0.98 }}
         >
           {/* الصورة الحالية */}
-          {currentImage && !uploading && !imageError ? (
+          {currentImage && !uploading ? (
             <>
               <img
                 src={currentImage}
                 alt="الصورة المرفوعة"
                 className="w-full h-full object-cover"
                 onLoad={() => {
-                  console.log('✅ تم تحميل الصورة بنجاح:', currentImage);
+                  console.log('✅ تم تحميل الصورة في المكون بنجاح:', currentImage);
                   setImageLoading(false);
                   setImageError(false);
                 }}
-                onLoadStart={() => {
-                  console.log('🔄 بدء تحميل الصورة:', currentImage);
-                  setImageLoading(true);
-                  setImageError(false);
-                }}
                 onError={(e) => {
-                  console.error('❌ فشل في تحميل الصورة:', currentImage);
+                  console.error('❌ فشل في تحميل الصورة في المكون:', currentImage);
                   console.error('تفاصيل الخطأ:', e);
                   setImageLoading(false);
                   setImageError(true);
                 }}
-                crossOrigin="anonymous"
+                style={{
+                  display: imageError ? 'none' : 'block',
+                  backgroundColor: imageLoading ? '#f3f4f6' : 'transparent'
+                }}
               />
 
               {/* مؤشر تحميل الصورة */}
@@ -235,45 +255,37 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 </div>
               )}
 
+              {/* رسالة خطأ تحميل الصورة */}
+              {imageError && (
+                <div className="absolute inset-0 bg-red-50 border-2 border-red-200 flex flex-col items-center justify-center text-center p-4">
+                  <div className="text-red-500 mb-2">
+                    <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                  </div>
+                  <span className="text-red-600 font-arabic text-sm mb-1">فشل في تحميل الصورة</span>
+                  <span className="text-red-500 font-arabic text-xs">انقر لرفع صورة جديدة</span>
+                </div>
+              )}
+
               {/* زر حذف الصورة */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   removeImage();
                 }}
-                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors z-10"
               >
                 <X className="w-3 h-3" />
               </button>
 
               {/* طبقة التمرير */}
-              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                <Camera className="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" />
-              </div>
+              {!imageLoading && !imageError && (
+                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  <Camera className="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" />
+                </div>
+              )}
             </>
-          ) : currentImage && imageError ? (
-            /* رسالة خطأ تحميل الصورة */
-            <div className="w-full h-full bg-red-50 border-2 border-red-200 flex flex-col items-center justify-center text-center p-4">
-              <div className="text-red-500 mb-2">
-                <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                </svg>
-              </div>
-              <span className="text-red-600 font-arabic text-sm mb-1">فشل في تحميل الصورة</span>
-              <span className="text-red-500 font-arabic text-xs">انقر لرفع صورة جديدة</span>
-
-              {/* زر حذف الصورة المعطلة */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setImageError(false);
-                  removeImage();
-                }}
-                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </div>
           ) : (
             /* منطقة الرفع */
             <div className="text-center p-4">

@@ -1,0 +1,239 @@
+/* تحسينات إضافية للتجاوب في لوحة التحكم */
+
+/* تحسين التمرير على الشاشات الصغيرة */
+@media (max-width: 768px) {
+  .admin-panel-content {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .admin-sidebar {
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* تحسين الأزرار على الشاشات الصغيرة */
+  .admin-button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .admin-button-group button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* تحسين النماذج على الشاشات الصغيرة */
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* تحسين البطاقات على الشاشات الصغيرة */
+  .admin-card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .admin-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .admin-card-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  /* تحسين الجداول على الشاشات الصغيرة */
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  /* تحسين النصوص على الشاشات الصغيرة */
+  .admin-text-responsive {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .admin-title-responsive {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+/* تحسينات للشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+  .admin-panel-content {
+    padding: 0.75rem;
+  }
+  
+  .admin-form-grid {
+    gap: 0.75rem;
+  }
+  
+  .admin-card {
+    padding: 0.5rem;
+  }
+  
+  .admin-button-small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .admin-input-small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* تحسينات للشاشات المتوسطة */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .admin-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* تحسينات للشاشات الكبيرة */
+@media (min-width: 1025px) {
+  .admin-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* تحسينات عامة للتجاوب */
+.admin-responsive-hide-mobile {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .admin-responsive-hide-mobile {
+    display: block;
+  }
+}
+
+.admin-responsive-show-mobile {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .admin-responsive-show-mobile {
+    display: none;
+  }
+}
+
+/* تحسين القوائم المنسدلة */
+.admin-dropdown-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.admin-dropdown-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.admin-dropdown-content.open {
+  transform: translateX(0);
+}
+
+/* تحسين التنقل */
+.admin-nav-mobile {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  text-align: right;
+  width: 100%;
+}
+
+.admin-nav-item:hover {
+  background-color: #f3f4f6;
+}
+
+.admin-nav-item.active {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* تحسين الأيقونات */
+.admin-icon-responsive {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .admin-icon-responsive {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* تحسين المساحات */
+.admin-spacing-responsive {
+  padding: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .admin-spacing-responsive {
+    padding: 1.5rem;
+  }
+}
+
+/* تحسين الخطوط */
+.admin-font-responsive {
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .admin-font-responsive {
+    font-size: 1rem;
+  }
+}
+
+/* تحسين الحدود */
+.admin-border-responsive {
+  border-width: 1px;
+}
+
+@media (min-width: 768px) {
+  .admin-border-responsive {
+    border-width: 2px;
+  }
+}
+
+/* تحسين الظلال */
+.admin-shadow-responsive {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .admin-shadow-responsive {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}

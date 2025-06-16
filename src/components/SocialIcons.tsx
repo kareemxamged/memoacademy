@@ -8,6 +8,36 @@ import {
 import { getCustomIcon } from './icons/SocialIcons';
 import { hoverAnimations, tapAnimations, cssTransitions } from '../lib/animations';
 
+// إضافة الأنماط المخصصة
+const customStyles = `
+  .instagram-gradient-bg {
+    background: linear-gradient(135deg, #833ab4 10%, #fd1d1d 50%, #fcb045 90%);
+  }
+  .facebook-gradient-bg {
+    background: linear-gradient(135deg, #1877f2 0%, #42a5f5 100%);
+  }
+  .youtube-gradient-bg {
+    background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+  }
+  .whatsapp-gradient-bg {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  }
+  .snapchat-gradient-bg {
+    background: linear-gradient(135deg, #fffc00 0%, #fffc00 100%);
+    box-shadow: 0 4px 15px rgba(255, 252, 0, 0.3);
+  }
+`;
+
+// إضافة الأنماط إلى الصفحة
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = customStyles;
+  if (!document.head.querySelector('style[data-social-gradients]')) {
+    styleElement.setAttribute('data-social-gradients', 'true');
+    document.head.appendChild(styleElement);
+  }
+}
+
 /**
  * دالة لتحويل اسم الأيقونة إلى مكون
  * Function to convert icon name to component
@@ -94,7 +124,7 @@ const SocialIcons: React.FC<SocialIconsProps> = ({ socialMedia }) => {
             className={`
               relative group
               w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16
-              ${social.iconBg}
+              ${social.iconBg.startsWith('bg-') ? social.iconBg : social.iconBg}
               rounded-full
               flex items-center justify-center
               shadow-lg hover:shadow-xl
@@ -109,7 +139,7 @@ const SocialIcons: React.FC<SocialIconsProps> = ({ socialMedia }) => {
             <div className={`absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 ${cssTransitions.fast}`}></div>
 
             {/* تأثير الإضاءة */}
-            <div className={`absolute inset-0 ${social.iconBg} opacity-0 group-hover:opacity-30 blur-sm ${cssTransitions.fast}`}></div>
+            <div className={`absolute inset-0 ${social.iconBg.startsWith('bg-') ? social.iconBg : social.iconBg} opacity-0 group-hover:opacity-30 blur-sm ${cssTransitions.fast}`}></div>
 
             {/* الأيقونة */}
             {getIconComponent(social.icon, `
@@ -123,7 +153,7 @@ const SocialIcons: React.FC<SocialIconsProps> = ({ socialMedia }) => {
             {/* تأثير النبضة */}
             <div className={`
               absolute inset-0
-              ${social.iconBg}
+              ${social.iconBg.startsWith('bg-') ? social.iconBg : social.iconBg}
               rounded-full
               opacity-0 group-hover:opacity-20
               animate-ping

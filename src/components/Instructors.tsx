@@ -17,7 +17,6 @@ interface InstructorsProps {
     titleEn: string;
     image: string;
     profileUrl: string;
-    whatsappNumber?: string;
     experience: string;
     experienceEn: string;
     specialties: string[];
@@ -200,9 +199,9 @@ const Instructors: React.FC<InstructorsProps> = ({ instructors, whatsappNumber }
                     </motion.button>
 
                     {/* زر التواصل عبر الواتساب - WhatsApp Contact Button */}
-                    {(instructor.whatsappNumber || whatsappNumber) && (
+                    {whatsappNumber && (
                       <InstructorWhatsAppButton
-                        phoneNumber={instructor.whatsappNumber || whatsappNumber || ''}
+                        phoneNumber={whatsappNumber}
                         instructorName={instructor.name}
                         className="w-full justify-center"
                       />

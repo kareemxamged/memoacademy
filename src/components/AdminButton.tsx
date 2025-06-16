@@ -13,9 +13,7 @@ const AdminButton: React.FC<AdminButtonProps> = ({ onOpenAdmin }) => {
   const [attemptCount, setAttemptCount] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
 
-  // كلمة المرور القوية والعشوائية
-  // للمطور: كلمة المرور هي Kx9#mP2$vL8@nQ5!
-  const ADMIN_PASSWORD = 'Kx9#mP2$vL8@nQ5!';
+  const ADMIN_PASSWORD = '##8958607100';
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -189,13 +189,13 @@ const SocialMediaSettings: React.FC<SocialMediaSettingsProps> = ({ onDataChange 
 
   // قائمة المنصات المتاحة
   const availablePlatforms = [
-    { id: 'instagram', name: 'إنستغرام', nameEn: 'Instagram', icon: 'Instagram', iconBg: 'bg-gradient-to-br from-purple-400 to-pink-400' },
+    { id: 'instagram', name: 'إنستغرام', nameEn: 'Instagram', icon: 'Instagram', iconBg: 'instagram-gradient-bg' },
     { id: 'facebook', name: 'فيسبوك', nameEn: 'Facebook', icon: 'Facebook', iconBg: 'bg-blue-600' },
     { id: 'youtube', name: 'يوتيوب', nameEn: 'YouTube', icon: 'YouTube', iconBg: 'bg-red-600' },
     { id: 'whatsapp', name: 'واتساب', nameEn: 'WhatsApp', icon: 'WhatsApp', iconBg: 'bg-green-500' },
     { id: 'twitter', name: 'تويتر/X', nameEn: 'Twitter/X', icon: 'Twitter', iconBg: 'bg-black' },
     { id: 'linkedin', name: 'لينكد إن', nameEn: 'LinkedIn', icon: 'LinkedIn', iconBg: 'bg-blue-700' },
-    { id: 'snapchat', name: 'سناب شات', nameEn: 'Snapchat', icon: 'Snapchat', iconBg: 'bg-yellow-400' },
+    { id: 'snapchat', name: 'سناب شات', nameEn: 'Snapchat', icon: 'Snapchat', iconBg: 'snapchat-gradient-bg' },
     { id: 'tiktok', name: 'تيك توك', nameEn: 'TikTok', icon: 'TikTok', iconBg: 'bg-black' },
     { id: 'telegram', name: 'تيليجرام', nameEn: 'Telegram', icon: 'Telegram', iconBg: 'bg-blue-500' },
     { id: 'discord', name: 'ديسكورد', nameEn: 'Discord', icon: 'Discord', iconBg: 'bg-indigo-600' },

@@ -97,7 +97,6 @@ export interface SiteData {
     titleEn: string;
     image: string;
     profileUrl: string;
-    whatsappNumber?: string;
     experience: string;
     experienceEn: string;
     specialties: string[];
@@ -220,7 +219,7 @@ export const defaultSiteData: SiteData = {
       icon: 'Instagram',
       url: 'https://instagram.com/memoacademy',
       iconColor: 'text-white',
-      iconBg: 'bg-gradient-to-br from-purple-400 to-pink-400',
+      iconBg: 'instagram-gradient-bg',
       visible: true,
     },
     {
@@ -279,8 +278,8 @@ export const defaultSiteData: SiteData = {
       nameEn: 'Snapchat',
       icon: 'Snapchat',
       url: 'https://snapchat.com/add/memoacademy',
-      iconColor: 'text-white',
-      iconBg: 'bg-yellow-400',
+      iconColor: 'text-black',
+      iconBg: 'snapchat-gradient-bg',
       visible: false,
     },
     {
@@ -399,8 +398,8 @@ export const defaultSiteData: SiteData = {
       nameEn: 'Snapchat',
       icon: 'Snapchat',
       url: 'https://snapchat.com/add/memoacademy',
-      iconColor: 'text-white',
-      iconBg: 'bg-yellow-400',
+      iconColor: 'text-black',
+      iconBg: 'snapchat-gradient-bg',
       visible: false,
     },
     {

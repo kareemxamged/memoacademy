@@ -54,7 +54,6 @@ const InstructorsSettings: React.FC<InstructorsSettingsProps> = ({ onDataChange 
     title_en: '',
     image_url: '',
     profile_url: '',
-    whatsapp_number: '',
     experience: '',
     experience_en: '',
     specialties: [],
@@ -468,21 +467,6 @@ const InstructorsSettings: React.FC<InstructorsSettingsProps> = ({ onDataChange 
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="https://example.com/profile"
                   />
-                </div>
-
-                {/* رقم الواتساب */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 font-arabic mb-1">رقم الواتساب</label>
-                  <input
-                    type="text"
-                    value={editingItem.whatsapp_number || ''}
-                    onChange={(e) => updateEditingItem('whatsapp_number', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="966501234567"
-                  />
-                  <p className="text-xs text-gray-500 mt-1 font-arabic">
-                    أدخل الرقم بدون علامة + (مثال: 966501234567). إذا تُرك فارغاً، سيتم استخدام رقم الأكاديمية العام.
-                  </p>
                 </div>
 
                 {/* الخبرة */}

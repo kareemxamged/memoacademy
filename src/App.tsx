@@ -100,7 +100,6 @@ interface SiteData {
     titleEn: string;
     image: string;
     profileUrl: string;
-    whatsappNumber?: string;
     experience: string;
     experienceEn: string;
     specialties: string[];
@@ -225,7 +224,6 @@ function App() {
     titleEn: instructor.title_en || instructor.title,
     image: instructor.image_url || '',
     profileUrl: instructor.profile_url || '',
-    whatsappNumber: instructor.whatsapp_number || '',
     experience: instructor.experience || '',
     experienceEn: instructor.experience_en || instructor.experience || '',
     specialties: instructor.specialties || [],
